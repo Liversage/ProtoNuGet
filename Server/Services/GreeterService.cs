@@ -1,5 +1,5 @@
+using Greet;
 using Grpc.Core;
-using GrpcService;
 using Server;
 
 namespace Server.Services;

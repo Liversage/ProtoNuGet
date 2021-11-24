@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Greet;
 using Grpc.Net.Client;
-using GrpcService;
 
 // The port number must match the port of the gRPC server.
 using var channel = GrpcChannel.ForAddress("https://localhost:7279");

@@ -12,7 +12,7 @@ A local `NuGet.Config` file is used to be able to test the NuGet package.
 First step is to build the NuGet package:
 
 ```
-dotnet build Proto
+dotnet pack Proto
 ```
 
 Then run the server:
