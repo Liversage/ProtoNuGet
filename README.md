@@ -2,7 +2,7 @@
 
 This project demonstrates how it's possible to share `.proto` files for a gRPC API between two .NET projects using a NuGet package. This was inspired by a comment on GitHub issue [Enable referencing proto files in NuGet packages](https://github.com/grpc/grpc-dotnet/issues/183#issuecomment-513055273).
 
-Unfortunately, several source files will appear as if they have syntax errors when viewed in both Visual Studio 2022 and Visual Studio Code (using OmniSharp). As the code compiles this must be a bug in the tooling and I have [provided feedback to Visual Studio](https://developercommunity.visualstudio.com/t/IntelliSense-reports-false-compile-error/1468739) about this.
+This version fixes the problem where several source files would appear as if they had syntax errors when viewed in both Visual Studio 2022 and Visual Studio Code (using OmniSharp). As the code compiled this must be a bug in the tooling but [the feedback](https://developercommunity.visualstudio.com/t/IntelliSense-reports-false-compile-error/1468739) I have provided haven't gotten any attention.
 
 I based my project of the [Tutorial: Create a gRPC client and server in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start). 
 A local `NuGet.Config` file is used to be able to test the NuGet package.
@@ -29,16 +29,24 @@ dotnet run --project Client
 
 All projects will compile and run and the gRPC API will be used in the test.
 
-# IntelliSense problems
+# Fixing IntelliSense problems
 
-In Visual Studio 2022 version 17.0.1 `GrpcService.cs` in the `Server` project is displayed with IntelliSense errors:
+The original project used a `.targets` file to ensure that code generation ran for the `.proto` files in the NuGet package. Unfortunately, that broke IntelliSense and to work around this problem the `.targets` file has been removed and both client and server `.csproj` files now have to be edited to include the `.proto` files in the referenced NuGet package.
 
-![Screenshot of Visual Studio 2022 editor showing invalid IntelliSense errors in the file GrpcService.cs](ProtoNuGet-1.png)
+The NuGet package reference uses the `GeneratePathProperty="true"` attribute to create the variable `PkgProto` used later:
 
-Similarly, here is `Program.cs` in the `Client` project:
+```xml
+<PackageReference Include="Proto" Version="1.0.0" GeneratePathProperty="true" />
+```
 
-![Screenshot of Visual Studio 2022 editor showing IntelliSense errors in the file Program.cs](ProtoNuGet-2.png)
+The following should be added to the `.csproj` to generate code for the `.proto` files:
 
-You will see the same errors in Visual Studio Code (and also Rider).
+```xml
+<ItemGroup>
+    <Protobuf Include="$(PkgProto)\content\**\*.proto" ProtoRoot="$(PkgProto)\content" />
+</ItemGroup>
+```
 
-Not only are these false errors annoying to look at, they make edits hard and refactorings impossible because the editor tools will make wrong suggestions and code changes based on not being able to compile the code even though it compiles and runs just fine.
+The `GrpcServices` and `Access` attributes can be used to modify how gRPC code generation is performed.
+
+This approach is more complicated compared to the original solution where nothing more than a standard NuGet reference was required to use the shared `.proto` files. However, the IntelliSense problems that came along with that solution were unbearable so until they have been fixed (if ever?) this solution is fairly easy to use.

@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Content Include="**\*.proto" Pack="true" PackagePath="content" />
-    <Content Include="Proto.targets" Pack="true" PackagePath="build\$(TargetFramework)" />
     <Content Include="_._" Pack="true" PackagePath="lib\$(TargetFramework)" />
   </ItemGroup>
 
