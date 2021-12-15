@@ -7,6 +7,8 @@ Unfortunately, several source files will appear as if they have syntax errors wh
 I based my project of the [Tutorial: Create a gRPC client and server in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start). 
 A local `NuGet.Config` file is used to be able to test the NuGet package.
 
+Notice that a solution/work around for this problem has been created on [a different branch in this repository](https://github.com/Liversage/ProtoNuGet/tree/no-intellisense-errors).
+
 # Build and run
 
 First step is to build the NuGet package:
